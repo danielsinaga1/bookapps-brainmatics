@@ -7,8 +7,12 @@
                 <div class="col-md-12">
                     <div class="card">
                         <div class="card-reader">List Category</div>
-                        <div class="card-body">
 
+                        @include('components.alert')
+                        <div class="card-body">
+                            <div class="pb-2">
+                                <a href="{{ route('category.create') }}" class="btn btn-dark"> Create new Category</a>
+                            </div>
                             <table class="table">
                                 <thead class="table-dark">
                                     <th>No</th>
@@ -23,7 +27,7 @@
 
                                     @forelse ($categories as $key=>$category)
                                         <tr>
-                                            {{--     --}}
+                                            {{--  --}}
                                             <td>{{ $categories->firstItem() + $key }} </td>
                                             <td>{{ $category->name }} </td>
                                             <td>{{ $category->created_at }} </td>
