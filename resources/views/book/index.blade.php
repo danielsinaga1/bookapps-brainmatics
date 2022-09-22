@@ -43,8 +43,8 @@
                                             </td>
                                             <td>{{ $book->year }} </td>
                                             <td> TODO: category </td>
-                                            <td>{{ $book->created_by }} </td>
-                                            <td>{{ $book->updated_by }} </td>
+                                            <td>{{ $book->createdBy->name }} </td>
+                                            <td>{{ $book->updatedBy->name }} </td>
                                             <td>{{ $book->created_at }} </td>
                                             <td>{{ $book->updated_at }} </td>
                                             <td class="justify-content-between">

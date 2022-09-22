@@ -20,7 +20,7 @@ class CategoryController extends Controller
         $data = [
             'categories' => Category::latest()->paginate(10)
 
-        ];  
+        ];
 
         return view('category.index', $data);
     }
@@ -32,8 +32,9 @@ class CategoryController extends Controller
      */
     public function create()
     {
+        $categories = Category::all()->pluck('name', 'id');
 
-        return view('category.create');
+        return view('category.create', compact('categories'));
     }
 
     /**
