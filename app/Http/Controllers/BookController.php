@@ -27,8 +27,9 @@ class BookController extends Controller
     public function create()
     {
 
-        $categories = Category::all();
-        return view('book.create' . compact('categories'));
+        $categories = Category::all()->pluck('name', 'id');
+
+        return view('book.create',  compact('categories'));
     }
 
     /**

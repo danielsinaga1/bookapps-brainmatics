@@ -32,9 +32,8 @@ class CategoryController extends Controller
      */
     public function create()
     {
-        $categories = Category::all()->pluck('name', 'id');
 
-        return view('category.create', compact('categories'));
+        return view('category.create');
     }
 
     /**
@@ -50,8 +49,8 @@ class CategoryController extends Controller
         try {
             $category = new Category();
             $category->name = $request->name;
-            $category->save();
             return redirect()->route('category.index')->with('message-success', 'Category created successfully');
+            $category->save();
         } catch (\Exception $e) {
             return redirect()->route('category.index')->with('message-fail', 'Category create Fail message ' . $e->getMessage());
         }
@@ -92,8 +91,10 @@ class CategoryController extends Controller
 
         try {
             $category->name = $request->name;
-            $category->save();
+            
+
             return redirect()->route('category.index')->with('message-success', 'Category update successfully');
+
         } catch (\Exception $e) {
             return redirect()->route('category.index')->with('message-fail', 'Category update failure. ' . $e->getMessage());
         }
@@ -107,11 +108,6 @@ class CategoryController extends Controller
      */
     public function destroy(Category $category)
     {
-        try {
-            $category->delete();
-            return redirect()->route('category.index')->with('message-success', 'Category delete successfully');
-        } catch (\Exception $e) {
-            return redirect()->route('category.index')->with('message-fail', 'Category delete failure. ' . $e->getMessage());
-        }
+        //
     }
 }
