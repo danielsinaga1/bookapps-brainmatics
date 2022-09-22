@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\CategoryStoreRequest;
+use App\Http\Requests\CategoryUpdateRequest;
 use App\Models\Category;
 use Illuminate\Http\Request;
 
@@ -48,8 +49,8 @@ class CategoryController extends Controller
         try {
             $category = new Category();
             $category->name = $request->name;
-            return redirect()->route('category.index')->with('message-success', 'Category created successfully');
             $category->save();
+            return redirect()->route('category.index')->with('message-success', 'Category created successfully');
         } catch (\Exception $e) {
             return redirect()->route('category.index')->with('message-fail', 'Category create Fail message ' . $e->getMessage());
         }
@@ -74,7 +75,8 @@ class CategoryController extends Controller
      */
     public function edit(Category $category)
     {
-        //
+
+        return view('category.edit', compact('category'));
     }
 
     /**
@@ -84,9 +86,16 @@ class CategoryController extends Controller
      * @param  \App\Models\Category  $category
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Category $category)
+    public function update(CategoryUpdateRequest $request, Category $category)
     {
-        //
+
+        try {
+            $category->name = $request->name;
+            $category->save();
+            return redirect()->route('category.index')->with('message-success', 'Category update successfully');
+        } catch (\Exception $e) {
+            return redirect()->route('category.index')->with('message-fail', 'Category update failure. ' . $e->getMessage());
+        }
     }
 
     /**
@@ -97,6 +106,11 @@ class CategoryController extends Controller
      */
     public function destroy(Category $category)
     {
-        //
+        try {
+            $category->delete();
+            return redirect()->route('category.index')->with('message-success', 'Category delete successfully');
+        } catch (\Exception $e) {
+            return redirect()->route('category.index')->with('message-fail', 'Category delete failure. ' . $e->getMessage());
+        }
     }
 }
