@@ -20,7 +20,7 @@ class CategoryController extends Controller
         $data = [
             'categories' => Category::latest()->paginate(10)
 
-        ];
+        ];  
 
         return view('category.index', $data);
     }
