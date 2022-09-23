@@ -91,10 +91,9 @@ class CategoryController extends Controller
 
         try {
             $category->name = $request->name;
-            
+
 
             return redirect()->route('category.index')->with('message-success', 'Category update successfully');
-
         } catch (\Exception $e) {
             return redirect()->route('category.index')->with('message-fail', 'Category update failure. ' . $e->getMessage());
         }
@@ -108,6 +107,15 @@ class CategoryController extends Controller
      */
     public function destroy(Category $category)
     {
-        //
+        try {
+            $category->delete();
+            return redirect()
+                ->route('category.index')
+                ->with('message-success', 'Category deleted successfully');
+        } catch (\Exception $e) {
+            return redirect()
+                ->route('category.index')
+                ->with('message-fail', 'Category delete failure. ' . $e->getMessage());
+        }
     }
 }

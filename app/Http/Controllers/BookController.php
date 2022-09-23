@@ -2,9 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\BookStoreRequest;
+use App\Http\Requests\BookUpdateRequest;
 use App\Models\Book;
 use App\Models\Category;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 
 class BookController extends Controller
 {
@@ -15,7 +19,7 @@ class BookController extends Controller
      */
     public function index()
     {
-        $books = Book::with('createdBy:id,name', 'updatedBy:id,name')->paginate(20);
+        $books = Book::with(['createdBy:id,name', 'updatedBy:id,name', 'categories'])->latest()->paginate(20);
         return view('book.index', compact('books'));
     }
 
@@ -38,9 +42,26 @@ class BookController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(BookStoreRequest $request)
     {
-        //
+        DB::beginTransaction();
+        try {
+            $book = new Book();
+            $book->title = $request->title;
+            $book->cover = $request->file('cover')->store('book-cover', 'public');
+            $book->year = $request->year;
+            $book->created_by = auth()->user()->id;
+            $book->save();
+
+            $book->categories()->attach($request->categories);
+
+            DB::commit();
+            return redirect()->route('book.index')->with('message-success', 'Book created successfully');
+            //code...
+        } catch (\Exception $ex) {
+            DB::rollback();
+            return redirect()->route('book.index')->with('message-fail', 'Book created failure', $ex->getMessage());
+        }
     }
 
     /**
@@ -62,7 +83,9 @@ class BookController extends Controller
      */
     public function edit(Book $book)
     {
-        //
+
+        $categories = Category::pluck('name', 'id');
+        return view('book.edit', compact('book', 'categories'));
     }
 
     /**
@@ -72,9 +95,33 @@ class BookController extends Controller
      * @param  \App\Models\Book  $book
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Book $book)
+    public function update(BookUpdateRequest $request, Book $book)
     {
-        //
+        DB::beginTransaction();
+        try {
+            $book->title = $request->title;
+
+            if ($request->file('cover')) {
+
+                if ($book->cover) {
+                    Storage::delete('public/', $book->cover);
+                }
+                $book->cover = $request->file('cover')->store('book-cover', 'public');
+            }
+
+            $book->year = $request->year;
+            $book->updated_by = auth()->user()->id;
+            $book->save();
+
+            $book->categories()->sync($request->categories);
+
+            DB::commit();
+            return redirect()->route('book.index')->with('message-success', 'Book updated successfully');
+            //code...
+        } catch (\Exception $ex) {
+            DB::rollback();
+            return redirect()->route('book.index')->with('message-fail', 'Book update failure', $ex->getMessage());
+        }
     }
 
     /**
@@ -85,6 +132,15 @@ class BookController extends Controller
      */
     public function destroy(Book $book)
     {
-        //
+        try {
+            $book->delete();
+            return redirect()
+                ->route('book.index')
+                ->with('message-success', 'Book deleted successfully');
+        } catch (\Exception $e) {
+            return redirect()
+                ->route('book.index')
+                ->with('message-fail', 'Book delete failure. ' . $e->getMessage());
+        }
     }
 }
