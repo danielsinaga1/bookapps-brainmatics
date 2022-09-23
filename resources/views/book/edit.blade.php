@@ -35,7 +35,7 @@
                                         value="{{ old('cover') }}">
 
                                     <div class="mt-2">
-                                        @if (str_contains($book->cover, 'html'))
+                                        @if (str_contains($book->cover, 'http'))
                                             <img src="{{ $book->cover }}" width="100">
                                         @else
                                             <img src="{{ asset('storage/' . $book->cover) }}" width="100">
@@ -54,7 +54,7 @@
                                 <label for="year" class="col-sm-2 col-form-label">Category</label>
                                 <div class="col-sm-10">
                                     <select name="categories[]" multiple id="categories" class="form-select">
-                                        @foreach ($categories as $key => $category)
+                                        {{-- @foreach ($categories as $key => $category)
                                             @forelse (old('categories') ?? [] as $selectedId)
                                                 <option
                                                     value="{{ $key }} {{ $selectedId == $key ? 'selected' : '' }}">
@@ -73,6 +73,13 @@
                                                     </option>
                                                 @endforelse
                                             @endforelse
+                                        @endforeach --}}
+
+                                        @foreach ($categories as $key->$category)
+                                            <option value="{{ $key }}"
+                                                {{ $book->categories->pluck('id')->contains($key) ? 'selected' : '' }}>
+                                                {{ $category }}
+                                            </option>
                                         @endforeach
                                     </select>
                                 </div>
