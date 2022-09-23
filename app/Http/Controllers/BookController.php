@@ -132,12 +132,25 @@ class BookController extends Controller
      */
     public function destroy(Book $book)
     {
+
+        DB::beginTransaction();
         try {
+
+            $book->categories()->detach();
+
+            if ($book->cover) {
+                Storage::delete('public/' . $book->cover);
+            }
+
             $book->delete();
+
+            DB::commit();
             return redirect()
                 ->route('book.index')
                 ->with('message-success', 'Book deleted successfully');
         } catch (\Exception $e) {
+
+            DB::rollBack();
             return redirect()
                 ->route('book.index')
                 ->with('message-fail', 'Book delete failure. ' . $e->getMessage());
