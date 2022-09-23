@@ -58,6 +58,7 @@
                                             <td>{{ $book->updatedBy->name }} </td>
                                             <td>{{ $book->created_at }} </td>
                                             <td>{{ $book->updated_at }} </td>
+
                                             <td class="justify-content-between">
                                                 <a href="{{ route('book.edit', ['book' => $book]) }}"
                                                     class="btn btn-primary">Edit</a>

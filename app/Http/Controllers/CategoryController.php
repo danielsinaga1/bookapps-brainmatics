@@ -6,6 +6,7 @@ use App\Http\Requests\CategoryStoreRequest;
 use App\Http\Requests\CategoryUpdateRequest;
 use App\Models\Category;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
 
 class CategoryController extends Controller
 {
@@ -16,6 +17,8 @@ class CategoryController extends Controller
      */
     public function index()
     {
+
+        abort_if(Gate::denies('create-category'), 403, 'Anda tidak memiliki hak akses!');
 
         $data = [
             'categories' => Category::latest()->paginate(10)
@@ -75,7 +78,7 @@ class CategoryController extends Controller
      */
     public function edit(Category $category)
     {
-
+        abort_if(Gate::denies('edit-category'), 403, 'Anda tidak memiliki hak akses!');
         return view('category.edit', compact('category'));
     }
 
@@ -107,6 +110,8 @@ class CategoryController extends Controller
      */
     public function destroy(Category $category)
     {
+
+        abort_if(Gate::denies('delete-category'), 403, 'Anda tidak memiliki hak akses!');
         try {
             $category->delete();
             return redirect()

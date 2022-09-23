@@ -19,6 +19,7 @@ class BookController extends Controller
      */
     public function index()
     {
+
         $books = Book::with(['createdBy:id,name', 'updatedBy:id,name', 'categories'])->latest()->paginate(20);
         return view('book.index', compact('books'));
     }
@@ -83,7 +84,6 @@ class BookController extends Controller
      */
     public function edit(Book $book)
     {
-
         $categories = Category::pluck('name', 'id');
         return view('book.edit', compact('book', 'categories'));
     }

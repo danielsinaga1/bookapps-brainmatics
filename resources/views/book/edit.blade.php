@@ -53,7 +53,6 @@
                             <div class="form-group">
                                 <label for="year" class="col-sm-2 col-form-label">Category</label>
                                 <div class="col-sm-10">
-                                    <select name="categories[]" multiple id="categories" class="form-select">
                                         {{-- @foreach ($categories as $key => $category)
                                             @forelse (old('categories') ?? [] as $selectedId)
                                                 <option
@@ -75,12 +74,15 @@
                                             @endforelse
                                         @endforeach --}}
 
-                                        @foreach ($categories as $key->$category)
-                                            <option value="{{ $key }}"
-                                                {{ $book->categories->pluck('id')->contains($key) ? 'selected' : '' }}>
-                                                {{ $category }}
-                                            </option>
-                                        @endforeach
+                                        <select name="categories[]" multiple id="categories" class="form-select"
+                                            data-placeholder="Choose category">
+                                            @foreach ($categories as $key => $category)
+                                                <option value="{{ $key }}"
+                                                    {{ $book->categories->pluck('id')->contains($key) ? 'selected' : '' }}>
+                                                    {{ $category }}</option>
+                                            @endforeach
+                                        </select>
+
                                     </select>
                                 </div>
                             </div>
